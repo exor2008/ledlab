@@ -1,7 +1,5 @@
 use crate::{buffer::Buffer, utils::Direction};
 
-const WORLDS: usize = 6;
-
 pub trait Tick<Color, Coord, B>
 where
     B: Buffer<Color, Coord>,
@@ -17,18 +15,18 @@ pub trait World {
     fn get_world(index: usize) -> Self;
 }
 
-pub struct Switch {
+pub struct Switch<const WORLDS: usize> {
     counter: usize,
     is_on: bool,
 }
 
-impl Default for Switch {
+impl<const WORLDS: usize> Default for Switch<WORLDS> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl Switch {
+impl<const WORLDS: usize> Switch<WORLDS> {
     pub fn new() -> Self {
         Switch {
             counter: 1,
