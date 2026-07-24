@@ -1,17 +1,23 @@
+use embassy_time::Ticker;
+
 use crate::{buffer::Buffer, utils::Direction};
 
-pub trait Tick<Color, Coord, B>
+pub trait Tick<Coord, B, const N: usize>
 where
-    B: Buffer<Color, Coord>,
+    B: Buffer<Coord, N>,
 {
-    type Ticker;
-
     fn tick(&mut self, buffer: &mut B);
-    fn ticker(&mut self) -> &mut Self::Ticker;
+}
+
+pub trait GetTicker {
+    fn get_ticker(&mut self) -> &mut Ticker;
+}
+
+pub trait OnDirection {
     fn on_direction(&mut self, direction: Direction);
 }
 
-pub trait World {
+pub trait GetWorld {
     fn get_world(index: usize) -> Self;
 }
 
@@ -34,7 +40,7 @@ impl<const WORLDS: usize> Switch<WORLDS> {
         }
     }
 
-    pub fn switch_world<W: World>(&mut self) -> W {
+    pub fn switch_world<W: GetWorld>(&mut self) -> W {
         self.counter += 1;
         self.counter = if self.counter > WORLDS {
             1
@@ -44,15 +50,15 @@ impl<const WORLDS: usize> Switch<WORLDS> {
         W::get_world(self.counter)
     }
 
-    pub fn turn_off<W: World>(&mut self) -> W {
+    pub fn turn_off<W: GetWorld>(&mut self) -> W {
         W::get_world(0)
     }
 
-    pub fn turn_on<W: World>(&mut self) -> W {
+    pub fn turn_on<W: GetWorld>(&mut self) -> W {
         W::get_world(self.counter)
     }
 
-    pub fn switch_power<W: World>(&mut self) -> W {
+    pub fn switch_power<W: GetWorld>(&mut self) -> W {
         match self.is_on {
             true => {
                 self.is_on = false;
