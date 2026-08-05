@@ -36,6 +36,10 @@ impl<const COOLDOWNL: u8, const MIN: usize, const MAX: usize> CooldownValue<COOL
         }
     }
 
+    pub fn set(&mut self, value: usize) {
+        self.value = value
+    }
+
     pub fn value(&self) -> &usize {
         &self.value
     }

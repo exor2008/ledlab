@@ -1,6 +1,7 @@
+use embassy_rp::i2c_slave::Command;
 use embassy_time::Ticker;
 
-use crate::{buffer::Buffer, utils::Direction};
+use crate::buffer::Buffer;
 
 pub trait Tick<Coord, B, const N: usize>
 where
@@ -13,8 +14,8 @@ pub trait GetTicker {
     fn get_ticker(&mut self) -> &mut Ticker;
 }
 
-pub trait OnDirection {
-    fn on_direction(&mut self, direction: Direction);
+pub trait OnCommand<Command> {
+    fn on_command(&mut self, command: Command);
 }
 
 pub trait GetWorld {
@@ -69,5 +70,9 @@ impl<const WORLDS: usize> Switch<WORLDS> {
                 self.turn_on::<W>()
             }
         }
+    }
+
+    pub fn is_on(&self) -> bool {
+        self.is_on
     }
 }
