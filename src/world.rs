@@ -1,4 +1,3 @@
-use embassy_rp::i2c_slave::Command;
 use embassy_time::Ticker;
 
 use crate::buffer::Buffer;
